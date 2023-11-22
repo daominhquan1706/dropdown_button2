@@ -79,18 +79,20 @@ class _DropdownMenuPainter extends CustomPainter {
     final Tween<double> top = Tween<double>(
       //Begin at 0.0 instead of selectedItemOffset so that the menu open animation
       //always start from top to bottom instead of starting from the selected item
+
+      begin: _clampDouble(itemHeight, math.min(itemHeight, size.height), size.height),
+      end: size.height,
+    );
+
+    final Tween<double> bottom = Tween<double>(
       begin: 0.0,
       end: 0.0,
     );
 
-    final Tween<double> bottom = Tween<double>(
-      begin: _clampDouble(top.begin! + itemHeight, math.min(itemHeight, size.height), size.height),
-      end: size.height,
-    );
+    final Rect rect = Rect.fromLTRB(
+        0.0, top.evaluate(resize) + size.height, size.width, bottom.evaluate(resize) + size.height);
 
-    final Rect rect = Rect.fromLTRB(0.0, top.evaluate(resize), size.width, bottom.evaluate(resize));
-
-    _painter.paint(canvas, rect.topLeft, ImageConfiguration(size: rect.size));
+    _painter.paint(canvas, rect.bottomLeft, ImageConfiguration(size: rect.size));
   }
 
   @override
