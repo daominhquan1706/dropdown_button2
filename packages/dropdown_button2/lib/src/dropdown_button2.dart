@@ -181,14 +181,7 @@ class _DropdownMenuItemButtonState<T> extends State<_DropdownMenuItemButton<T>> 
 
   @override
   Widget build(BuildContext context) {
-    final double menuCurveEnd = widget.route.dropdownStyle.openInterval.end;
-
     final DropdownMenuItem<T> dropdownMenuItem = widget.route.items[widget.itemIndex].item!;
-    final double unit = 0.5 / (widget.route.items.length + 1.5);
-    final double start = _clampDouble(menuCurveEnd + (widget.itemIndex + 1) * unit, 0.0, 1.0);
-    final double end = _clampDouble(start + 1.5 * unit, 0.0, 1.0);
-    final CurvedAnimation opacity =
-        CurvedAnimation(parent: widget.route.animation!, curve: Interval(start, end));
 
     Widget child = Container(
       padding: (menuItemStyle.padding ?? _kMenuItemPadding).resolve(widget.textDirection),
@@ -213,6 +206,13 @@ class _DropdownMenuItemButtonState<T> extends State<_DropdownMenuItemButton<T>> 
             : child,
       );
     }
+    final double menuCurveEnd = widget.route.dropdownStyle.openInterval.end;
+    final double unit = 0.5 / (widget.route.items.length + 1.5);
+    final double start =
+        _clampDouble(1.0 - (menuCurveEnd + (widget.itemIndex + 1) * unit), 0.0, 1.0);
+    final double end = _clampDouble(start + 1.5 * unit, 0.0, 1.0);
+    final CurvedAnimation opacity =
+        CurvedAnimation(parent: widget.route.animation!, curve: Interval(start, end));
     child = FadeTransition(opacity: opacity, child: child);
     if (kIsWeb && dropdownMenuItem.enabled) {
       child = Shortcuts(
